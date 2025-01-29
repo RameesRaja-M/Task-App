@@ -102,8 +102,7 @@ function Dashboard() {
         status,
         isPinned: false,
         userId: user.uid, // Ensure the task is associated with the logged-in user
-
-      })
+      },{ withCredentials: true})
         .then((res) => {
           setTasks((prevTasks) => [res.data, ...prevTasks]);
           setAllTasks((prevTasks) => [res.data, ...prevTasks]);
@@ -122,7 +121,7 @@ function Dashboard() {
   // Get Task 
   const getTasks = async () => {
    
-    await axios.get(`${serverURL}/api/tasks`)
+    await axios.get(`${serverURL}/api/tasks`,{ withCredentials: true})
       .then((res) => {
 
         // Filter tasks for the logged-in user
@@ -157,7 +156,7 @@ function Dashboard() {
   const handleupdate = () => {
     setError('')
     if (editTitle.trim() !== '' && editDescription.trim() !== '') {
-      axios.put(`${serverURL}/api/tasks/${editid}`, { title: editTitle, description: editDescription, status: editStatus })
+      axios.put(`${serverURL}/api/tasks/${editid}`, { title: editTitle, description: editDescription, status: editStatus },{ withCredentials: true})
         .then(() => {
           const updatedTasks = tasks.map((item) => {
             if (item._id === editid) {
@@ -186,7 +185,7 @@ function Dashboard() {
 
   // Handle Delete Function
   const handleDelete = (id) => {
-    axios.delete(`${serverURL}/api/tasks/${id}`)
+    axios.delete(`${serverURL}/api/tasks/${id}`,{ withCredentials: true})
       .then(() => {
         const updatedTasks = tasks.filter((item) => item._id !== id)
         setTasks(updatedTasks)
@@ -242,7 +241,7 @@ function Dashboard() {
 
   // Handle Pin Function
   const handlePin = (id) => {
-    axios.put(`${serverURL}/api/tasks/pin/${id}`)
+    axios.put(`${serverURL}/api/tasks/pin/${id}`,{ withCredentials: true})
       .then((res) => {
         const updatedTasks = tasks.map((task) =>
           task._id === res.data._id ? { ...task, isPinned: res.data.isPinned } : task

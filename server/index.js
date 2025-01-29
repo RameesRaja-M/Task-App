@@ -11,12 +11,13 @@ const app = express();
 app.use(cors({
     origin:process.env.FRONTEND_URL || 'http://localhost:5173',
     methods: 'GET,PUT,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
 }))
 app.use(bodyparser.json());
 
 // .env
-require('dotenv').config()
+require('dotenv').config();
 const port = process.env.PORT || 5000
 const mongoURL = process.env.MONGO_URL
 
