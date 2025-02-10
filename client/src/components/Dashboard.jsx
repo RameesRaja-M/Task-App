@@ -51,19 +51,34 @@ function Dashboard() {
   // sortBy Title,Date UseEffect
   useEffect(() => {
     let sortedTasks = [...tasks];
-
-    if (sortBy === "title") {
-      sortedTasks.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "date") {
-      sortedTasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Newest first
-    }
-
+  
+    // Separate pinned and unpinned tasks
+    const pinnedTasks = sortedTasks.filter((task) => task.isPinned);
+    const unpinnedTasks = sortedTasks.filter((task) => !task.isPinned);
+  
+    const sortTasks = (taskList) => {
+      if (sortBy === "title") {
+        return taskList.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sortBy === "date") {
+        return taskList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+      return taskList;
+    };
+  
+    // Sort pinned and unpinned tasks separately
+    const sortedPinnedTasks = sortTasks(pinnedTasks);
+    const sortedUnpinnedTasks = sortTasks(unpinnedTasks);
+  
     if (order === "desc") {
-      sortedTasks.reverse();
+      sortedPinnedTasks.reverse();
+      sortedUnpinnedTasks.reverse();
     }
-
-    setTasks(sortedTasks);
-  }, [sortBy, order]);
+  
+    // Merge sorted pinned and unpinned tasks, with pinned on top
+    setTasks([...sortedPinnedTasks, ...sortedUnpinnedTasks]);
+  }, [sortBy, order, tasks]);
+  
+  
 
 
   // Sort By Status UseEffect
@@ -93,7 +108,7 @@ function Dashboard() {
 
   // Submit Function
   const handlesubmit = () => {
-    setError('');
+    
 
     if (title.trim() !== '' && description.trim() !== '') {
       axios.post(`${serverURL}/api/tasks`, {
@@ -123,7 +138,7 @@ function Dashboard() {
    
     await axios.get(`${serverURL}/api/tasks`,{ withCredentials: true})
       .then((res) => {
-
+          console.log(res)
         // Filter tasks for the logged-in user
         const userTasks = res.data.filter(task => task.userId === user.uid);
 
@@ -159,6 +174,7 @@ function Dashboard() {
       axios.put(`${serverURL}/api/tasks/${editid}`, { title: editTitle, description: editDescription, status: editStatus },{ withCredentials: true})
         .then(() => {
           const updatedTasks = tasks.map((item) => {
+            
             if (item._id === editid) {
               return { ...item, title: editTitle, description: editDescription, status: editStatus };
             }
@@ -169,7 +185,7 @@ function Dashboard() {
           setEditTitle('')
           setEditDescription('')
           setEditStatus('ToDo')
-          setEditId(-1)
+          setEditId(-1) // Edit Field Show 
           alert("Task Updated Successfully")
           console.log("Updated Successfully")
         })
@@ -187,9 +203,9 @@ function Dashboard() {
   const handleDelete = (id) => {
     axios.delete(`${serverURL}/api/tasks/${id}`,{ withCredentials: true})
       .then(() => {
-        const updatedTasks = tasks.filter((item) => item._id !== id)
-        setTasks(updatedTasks)
-        setAllTasks(updatedTasks)
+        const updatedTasks = tasks.filter((item) => item._id !== id) // not equal task using filter method to list
+        setTasks(updatedTasks)   // show UI 
+        setAllTasks(updatedTasks)  // delete a task updated to tasks 
         alert("Task Deleted Successfully")
         console.log("Deleted Successfully")
       }).catch(() => {
@@ -199,7 +215,7 @@ function Dashboard() {
 
   // Handle Search Function 
   const handleSearch = (e) => {
-    const searchValue = e.target.value.toLowerCase();
+    const searchValue = e.target.value.toLowerCase(); // consider Lower & Upper Case Letters
 
     setSearch(searchValue);
     if (searchValue === "") {
@@ -241,22 +257,23 @@ function Dashboard() {
 
   // Handle Pin Function
   const handlePin = (id) => {
-    axios.put(`${serverURL}/api/tasks/pin/${id}`,{ withCredentials: true})
+    axios.put(`${serverURL}/api/tasks/pin/${id}`, { withCredentials: true })
       .then((res) => {
         const updatedTasks = tasks.map((task) =>
           task._id === res.data._id ? { ...task, isPinned: res.data.isPinned } : task
-        ).sort((a, b) => {
-          if (a.isPinned === b.isPinned) {
-            return new Date(b.createdAt) - new Date(a.createdAt); // Newest first
-          }
-          return b.isPinned - a.isPinned; // Pinned first
-        });
-        setTasks(updatedTasks);
-        setAllTasks(updatedTasks);
-        
+        );
+  
+        // Separate and sort tasks with pinned always on top
+        const pinnedTasks = updatedTasks.filter((task) => task.isPinned);
+        const unpinnedTasks = updatedTasks.filter((task) => !task.isPinned);
+  
+        const sortedTasks = [...pinnedTasks, ...unpinnedTasks];
+        setTasks(sortedTasks);
+        setAllTasks(sortedTasks);
       })
       .catch(() => setError("Unable to pin/unpin the task"));
   };
+  
 
 
   return (

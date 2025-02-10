@@ -9,7 +9,7 @@ const { default: mongoose } = require('mongoose');
 // Create a Express Instence 
 const app = express();
 app.use(cors({
-    origin:process.env.FRONTEND_URL || 'https://task-apps-client.vercel.app',
+    origin:process.env.FRONTEND_URL || 'http://localhost:5173',
     methods: 'GET,PUT,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
@@ -177,7 +177,7 @@ app.put('/api/tasks/:id', async (req, res) => {
 app.delete('/api/tasks/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const deletedTask = await taskmodel.findByIdAndDelete(id)
+        const deletedTask = await taskmodel.findByIdAndDelete(id) // matching id to delete a task from Mongo DB
 
         if (!deletedTask) {
             return res.status(404).json({ message: "Task Not Found" });
@@ -194,10 +194,10 @@ app.delete('/api/tasks/:id', async (req, res) => {
 
 
 // Pin a Task
-app.put('/api/tasks/pin/:id', async (req, res) => {
+app.put('/api/tasks/pin/:id', async (req, res) => { 
     try {
         const id = req.params.id;
-        const task = await taskmodel.findById(id);
+        const task = await taskmodel.findById(id);  // matching id taking from Mongo DB
 
         if (!task) {
             return res.status(404).json({ message: "Task Not Found" });
@@ -216,4 +216,4 @@ app.put('/api/tasks/pin/:id', async (req, res) => {
 
 // Start server
 const PORT = 5000
-app.listen(PORT, () => console.log("Server running on port :"+ PORT))
+app.listen(PORT, () => console.log("Server running on port :"+ PORT)) 
