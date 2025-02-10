@@ -51,34 +51,19 @@ function Dashboard() {
   // sortBy Title,Date UseEffect
   useEffect(() => {
     let sortedTasks = [...tasks];
-  
-    // Separate pinned and unpinned tasks
-    const pinnedTasks = sortedTasks.filter((task) => task.isPinned);
-    const unpinnedTasks = sortedTasks.filter((task) => !task.isPinned);
-  
-    const sortTasks = (taskList) => {
-      if (sortBy === "title") {
-        return taskList.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (sortBy === "date") {
-        return taskList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      }
-      return taskList;
-    };
-  
-    // Sort pinned and unpinned tasks separately
-    const sortedPinnedTasks = sortTasks(pinnedTasks);
-    const sortedUnpinnedTasks = sortTasks(unpinnedTasks);
-  
-    if (order === "desc") {
-      sortedPinnedTasks.reverse();
-      sortedUnpinnedTasks.reverse();
+
+    if (sortBy === "title") {
+      sortedTasks.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === "date") {
+      sortedTasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Newest first
     }
-  
-    // Merge sorted pinned and unpinned tasks, with pinned on top
-    setTasks([...sortedPinnedTasks, ...sortedUnpinnedTasks]);
-  }, [sortBy, order, tasks]);
-  
-  
+
+    if (order === "desc") {
+      sortedTasks.reverse();
+    }
+
+    setTasks(sortedTasks);
+  }, [sortBy, order]);
 
 
   // Sort By Status UseEffect
@@ -257,23 +242,23 @@ function Dashboard() {
 
   // Handle Pin Function
   const handlePin = (id) => {
-    axios.put(`${serverURL}/api/tasks/pin/${id}`, { withCredentials: true })
+    axios.put(`${serverURL}/api/tasks/pin/${id}`,{ withCredentials: true}) // sent to PUT request to Update
       .then((res) => {
         const updatedTasks = tasks.map((task) =>
           task._id === res.data._id ? { ...task, isPinned: res.data.isPinned } : task
-        );
-  
-        // Separate and sort tasks with pinned always on top
-        const pinnedTasks = updatedTasks.filter((task) => task.isPinned);
-        const unpinnedTasks = updatedTasks.filter((task) => !task.isPinned);
-  
-        const sortedTasks = [...pinnedTasks, ...unpinnedTasks];
-        setTasks(sortedTasks);
-        setAllTasks(sortedTasks);
+        )
+        .sort((a, b) => {
+          if (a.isPinned === b.isPinned) {
+            return new Date(b.createdAt) - new Date(a.createdAt); // Newest first
+          }
+          return b.isPinned - a.isPinned; // Pinned first
+        });
+        setTasks(updatedTasks);
+        setAllTasks(updatedTasks);
+        
       })
       .catch(() => setError("Unable to pin/unpin the task"));
   };
-  
 
 
   return (
