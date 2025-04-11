@@ -4,6 +4,10 @@ A full-stack Task Manager web application built using **React**, **Node.js**, **
 
 This application allows users to register and log in securely, create and manage their personal task lists, and organize them by status, priority, or due date. The frontend is built with React and Tailwind CSS, while the backend uses Express.js and MongoDB for RESTful API functionality.
 
+## Live Link
+
+Website : https://task-apps-client.vercel.app/
+
 ## Features
 
 ### 1. User Authentication
