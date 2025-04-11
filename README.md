@@ -56,7 +56,14 @@ This application allows users to register and log in securely, create and manage
 - MongoDB Atlas used for cloud-hosted database
 
 ScreenShots:
-![task-1](https://github.com/user-attachments/assets/32dbbaa0-bc2d-48be-8a77-56491be15c8e)
-![task-2](https://github.com/user-attachments/assets/64de3445-a4af-4bbc-aed6-e2e316b3b81a)
 
 
+![task-1](https://github.com/user-attachments/assets/095da58c-6a6e-4d64-86d5-f653e821cda2)
+
+![task-2](https://github.com/user-attachments/assets/9f770ca7-e313-44c1-a8e5-322336a69217)
+
+![task-3](https://github.com/user-attachments/assets/6093eccc-8e05-4593-8bb4-8a28c97e6dec)
+
+![task-4](https://github.com/user-attachments/assets/737ed6bd-ddf6-4fbb-8a77-e6808c1e63f5)
+
+![task-5](https://github.com/user-attachments/assets/61ebaaf2-7b71-4b33-ae6e-e55c312de4c4)
