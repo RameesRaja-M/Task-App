@@ -9,7 +9,7 @@ const { default: mongoose } = require('mongoose');
 // Create a Express Instence 
 const app = express();
 app.use(cors({
-    origin:process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin:process.env.FRONTEND_URL || 'https://task-app-plum-seven.vercel.app/',
     methods: 'GET,PUT,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
