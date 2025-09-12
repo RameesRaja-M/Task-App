@@ -6,7 +6,7 @@ const bodyparser = require('body-parser')
 const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 
-// Create a Express Instence 
+// // Create a Express Instence 
 const app = express();
 app.use(cors({
     origin:process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -217,3 +217,4 @@ app.put('/api/tasks/pin/:id', async (req, res) => {
 // Start server
 const PORT = 5000
 app.listen(PORT, () => console.log("Server running on port :"+ PORT)) 
+
